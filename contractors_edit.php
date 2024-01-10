@@ -2,7 +2,12 @@
 require_once './database/controller.php';
 
 $controller = new Controller();
-$employees = $controller->fetchEmployees();
+$contractor = [];
+
+if (isset($_GET['id'])) {
+    $contracor_id = $_GET['id'];
+    $contractor = $controller->fetchContractor($contracor_id);
+}
 
 ?>
 
@@ -16,12 +21,6 @@ $employees = $controller->fetchEmployees();
       <link href="./css/style.css" rel="stylesheet">
       <style>
          
-         /* .table-picker tbody tr:nth-child(even) {
-            background-color: var(--even-color, #ff0000) !important;
-         }
-         .table-picker tbody tr:nth-child(odd) {
-            background-color: var(--odd-color, #ffffff) !important;
-         } */
 
       </style>
    </head>
@@ -88,78 +87,48 @@ $employees = $controller->fetchEmployees();
                      </div>
                   </div>
                </div>
-               <main id="prawy" class="col-md-9 ms-sm-auto px-md-3">
-                  <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                     <h1 class="fs-4">Pracownicy</h1>
-                  </div>
 
-                  <div>
-                     <input type="color" id="odd"/>
-                     <label for="odd">Nieparzyste</label>
-                  </div>
+               
+                <main id="prawy" class="col-md-9 ms-sm-auto px-md-3">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="fs-4">Edytuj Kontrahenta</h1>
+                    </div>
+                    <form action="actions.php?id=<?php echo $contracor_id; ?>" method="POST">
+                        <div class="mb-3">
+                            <label for="nip" class="form-label">NIP<span style="color: #ff0000;"> *</span></label>
+                            <input name="nip" type="text" class="form-control" id="nip" value="<?php echo $contractor['nip'] ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="regon" class="form-label">REGON<span style="color: #ff0000;"> *</span></label>
+                            <input name="regon" type="text" class="form-control" id="regonInput" value="<?php echo $contractor['regon'] ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nazwa<span style="color: #ff0000;"> *</span></label>
+                            <input name="name" type="text" class="form-control" id="nameInput" value="<?php echo $contractor['name'] ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="vat" class="form-label">Płatnik VAT<span style="color: #ff0000;"> *</span></label><br>
+                            <input name="vat" type="checkbox" id="vatInput" <?php echo ($contractor['vat_payer'] ? "checked=checked" : "") ?>>
+                        </div>
+                        <div class="mb-3">
+                            <label for="street" class="form-label">Ulica<span style="color: #ff0000;"> *</span></label>
+                            <input name="street" type="text" class="form-control" id="streetInput" value="<?php echo $contractor['street'] ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="houseNumber" class="form-label">Numer domu<span style="color: #ff0000;"> *</span></label>
+                            <input name="house_number" type="text" class="form-control" id="houseNumberInput" value="<?php echo $contractor['house_number'] ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="apartmentNumber" class="form-label">Numer Mieszkania</label>
+                            <input name="apartment_number" type="text" class="form-control" id="apartmentNumberInput" value="<?php echo $contractor['apartment_number'] ?>">
+                        </div>
+                        <div id="formInfo" class="form-text"><span style="color: #ff0000;">*</span> - Pola wymagane.</div>
 
-                  <div>
-                     <input type="color" id="even"/>
-                     <label for="even">Parzyste</label>
-                  </div>
-
-                  <table class="table table-striped">
-                           <tr>
-                           <th scope="col">Lp.</th>
-                           <th scope="col">Imię</th>
-                           <th scope="col">Nazwisko</th>
-                           <th scope="col">Stanowisko</th>
-                           <th scope="col">Data zatrudnienia</th>
-                           <th scope="col">Ilość dni urlopowych</th>
-                           </tr>
-                        </thead>
-                        <tbody>
-
-                           <?php
-                           foreach($employees as $employee) {
-                              ?>
-                              <tr>
-                                 <td><?php echo $employee['id'] ?></td>
-                                 <td><?php echo $employee['name'] ?></td>
-                                 <td><?php echo $employee['lastname'] ?></td>
-                                 <td><?php echo $employee['position'] ?></td>
-                                 <td><?php echo $employee['employment_date'] ?></td>
-                                 <td><?php echo $employee['vac_days'] ?></td>
-                              </tr>
-                              <?php
-                           }
-                           ?>
-                           
-                           
-                        </tbody>
-                     </table>
+                        <button name="btn_edit_contractor" class="btn btn-dark mt-3" type="submit">Zapisz</button>
+                    </form>
                </main>
             </div>
          </div>
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-   
-         <script>
-          
-          /* const oddPicker = document.getElementById("odd");
-            oddPicker.addEventListener("input", (e) => {
-               updateColor();
-            })
-
-            const evenPicker = document.getElementById("even");
-            evenPicker.addEventListener("input", (e) => {
-                updateColor();
-            })
-
-            function updateColor() {
-               console.log("test")
-               const oddColor = oddPicker.value;
-               const evenColor = evenPicker.value;
-
-               Array.from(document.getElementsByClassName("even")).forEach((item) => {
-                  item.style.backgroundColor = evenColor;
-               })
-            }     
-            */
-         </script>
    </body>
 </html>

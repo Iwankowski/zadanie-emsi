@@ -101,46 +101,83 @@ $contractors = $controller->fetchContractors();
                                           Dodawanie Kontrahenta</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
+                                <form action="actions.php" method="POST">
                                 <div class="modal-body">
-                                <form>
                                         <div class="mb-3">
                                             <label for="nip" class="form-label">NIP<span style="color: #ff0000;"> *</span></label>
-                                            <input type="text" class="form-control" id="nipInput">
+                                            <input name="nip" type="text" class="form-control" id="nipInput">
                                         </div>
                                         <div class="mb-3">
                                             <label for="regon" class="form-label">REGON<span style="color: #ff0000;"> *</span></label>
-                                            <input type="text" class="form-control" id="regonInput">
+                                            <input name="regon" type="text" class="form-control" id="regonInput">
                                         </div>
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Nazwa<span style="color: #ff0000;"> *</span></label>
-                                            <input type="text" class="form-control" id="nameInput">
+                                            <input name="name" type="text" class="form-control" id="nameInput">
                                         </div>
                                         <div class="mb-3">
                                             <label for="vat" class="form-label">Płatnik VAT<span style="color: #ff0000;"> *</span></label><br>
-                                            <input type="checkbox" id="vatInput">
+                                            <input name="vat_payer" type="checkbox" id="vatInput">
                                         </div>
                                         <div class="mb-3">
                                             <label for="street" class="form-label">Ulica<span style="color: #ff0000;"> *</span></label>
-                                            <input type="text" class="form-control" id="streetInput">
+                                            <input name="street" type="text" class="form-control" id="streetInput">
                                         </div>
                                         <div class="mb-3">
                                             <label for="houseNumber" class="form-label">Numer domu<span style="color: #ff0000;"> *</span></label>
-                                            <input type="text" class="form-control" id="houseNumberInput">
+                                            <input name="house_number" class="form-control" id="houseNumberInput">
                                         </div>
                                         <div class="mb-3">
                                             <label for="apartmentNumber" class="form-label">Numer Mieszkania</label>
-                                            <input type="text" class="form-control" id="apartmentNumberInput">
+                                            <input name="apartment_number" class="form-control" id="apartmentNumberInput">
                                         </div>
                                         <div id="formInfo" class="form-text"><span style="color: #ff0000;">*</span> - Pola wymagane.</div>
-                                </form>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-                                    <button type="button" class="btn btn-primary">Zapisz</button>
+                                    <button name="btn_create_contractor" type="submit" class="btn btn-primary">Zapisz</button>
                                 </div>
+                                </form>
+
                                 </div>
                             </div>
                             </div>
+
+
+                            
+
+                  <?php
+                     if(isset($_GET['edited'])){
+                     ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                           Pomyślnie edytowano
+                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                  <?php
+                     } else if (isset($_GET['deleted'])){
+                  ?>
+
+                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Pomyślnie usunięto
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                     </div>
+
+                  <?php
+                     } else if (isset($_GET['created'])){
+                        ?>
+      
+                           <div class="alert alert-success alert-dismissible fade show" role="alert">
+                           Pomyślnie zapisano
+                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+      
+                        <?php
+                           }
+                           ?>
+
+
+                 
+
 
                   <table class="table table-striped">
                         <thead>
@@ -158,10 +195,13 @@ $contractors = $controller->fetchContractors();
                         </thead>
                         <tbody>
                            <?php
+                           $index = 0;
                            foreach($contractors as $contractor) {
+                              if (!$contractor['deleted']) {
+
                               ?>
-                              <tr class="<?=$contractor['id']?>">
-                                 <td><?php echo $contractor['id'] ?></td>
+                              <tr>
+                                 <td><?php echo ++$index ?></td>
                                  <td><?php echo $contractor['nip'] ?></td>
                                  <td><?php echo $contractor['regon'] ?></td>
                                  <td><?php echo $contractor['name'] ?></td>
@@ -169,14 +209,21 @@ $contractors = $controller->fetchContractors();
                                  <td><?php echo $contractor['street'] ?></td>
                                  <td><?php echo $contractor['house_number'] ?></td>
                                  <td><?php echo $contractor['apartment_number'] ?></td>
-                                 <td><button type="button" class="btn btn-outline-primary">
-                                 <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z"/></svg>
-                                 </button></td>
-                                 <td><button type="button" class="btn btn-outline-primary">
-                                 <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
-                                 </button></td>
+                                 <td class="d-flex">
+
+                                    <a href="contractors_edit.php?id=<?php echo $contractor['id'] ?>" class="btn btn-dark me-2">
+                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
+                                    </a>
+                                    <form action="actions.php?id=<?php echo $contractor['id'] ?>" method="POST">
+                                       <input type="hidden" name="contractor_delete" hidden>
+                                       <button class="btn btn-danger" type="submit">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                       </button>
+                                    </form>
+                                 </td>
                               </tr>
                               <?php
+                              }
                            }
                            ?>
                            
