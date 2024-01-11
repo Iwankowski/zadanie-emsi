@@ -54,7 +54,7 @@ $delegations = $controller->fetchDelegations();
                      <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
                         <ul class="nav flex-column">
                            <li class="nav-item">
-                              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
+                              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="controls.php">
                               Różne Kontrolki HTML
                               </a>
                            </li>
@@ -85,7 +85,39 @@ $delegations = $controller->fetchDelegations();
                <main id="prawy" class="col-md-9 ms-sm-auto px-md-3">
                   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                      <h1 class="fs-4">Delegacje</h1>
+                     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#delegationModal">
+                     <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 489 589"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>
+                      Dodaj Delegacje</button>
                   </div>
+
+                  <?php
+                     if(isset($_GET['edited'])){
+                     ?>
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                           Pomyślnie edytowano
+                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                  <?php
+                     } else if (isset($_GET['deleted'])){
+                  ?>
+
+                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Pomyślnie usunięto
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                     </div>
+
+                  <?php
+                     } else if (isset($_GET['created'])){
+                        ?>
+      
+                           <div class="alert alert-success alert-dismissible fade show" role="alert">
+                           Pomyślnie zapisano
+                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+      
+                        <?php
+                           }
+                           ?>
 
                   <table class="table table-striped">
                         <thead>
@@ -96,22 +128,75 @@ $delegations = $controller->fetchDelegations();
                            <th scope="col">Data do</th>
                            <th scope="col">Miejsce wyjazdu</th>
                            <th scope="col">Miejsce przyjazdu</th>
+                           <th scope="col">Akcje</th>
                            </tr>
                         </thead>
                         <tbody>
 
+                        <div class="modal" id="delegationModal" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                          Dodawanie Delegacji</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form action="actions.php" method="POST">
+                                <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="fullname" class="form-label">Imię i Nazwisko</label>
+                                            <input name="fullname" type="text" class="form-control" id="fullNameInput">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="date_from" class="form-label">Data od</label>
+                                            <input name="date_from" type="date" class="form-control" id="dateFromInput">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="date_to" class="form-label">Data do</label>
+                                            <input name="date_to" type="date" class="form-control" id="dateToInput">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="departure" class="form-label">Miejsce wyjazdu</label><br>
+                                            <input name="departure" type="text" class="form-control" id="departureInput">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="arrival" class="form-label">Miejsce przyjazdu</label>
+                                            <input name="arrival" type="text" class="form-control" id="arrivalInput">
+                                        </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                                    <button name="btn_create_delegation" type="submit" class="btn btn-primary">Zapisz</button>
+                                </div>
+                                </form>
+
                            <?php
+                           $index = 0;
                            foreach($delegations as $delegation) {
+                              if (!$delegation['deleted']) {
+
                               ?>
-                              <tr class="<?=$delegation['id']?>">
-                                 <td><?php echo $delegation['id'] ?></td>
+                                 <tr>
+                                 <td><?php echo ++$index ?></td>
                                  <td><?php echo $delegation['fullname'] ?></td>
                                  <td><?php echo $delegation['date_from'] ?></td>
                                  <td><?php echo $delegation['date_to'] ?></td>
                                  <td><?php echo $delegation['departure'] ?></td>
                                  <td><?php echo $delegation['arrival'] ?></td>
+                                 <td class="d-flex">
+                                 <a href="delegation_edit.php?id=<?php echo $delegation['id'] ?>" class="btn btn-dark me-2">
+                                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
+                                    </a>
+                                    <form action="actions.php?id=<?php echo $delegation['id'] ?>" method="POST">
+                                       <input type="hidden" name="delegation_delete" hidden>
+                                       <button class="btn btn-danger" type="submit">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                       </button>
+                                    </form>
+                                 </td>
                               </tr>
                               <?php
+                              }
                            }
                            ?>
                            

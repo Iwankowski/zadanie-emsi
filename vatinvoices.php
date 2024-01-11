@@ -54,7 +54,7 @@ $invoices = $controller->fetchInvoices();
                      <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
                         <ul class="nav flex-column">
                            <li class="nav-item">
-                              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
+                              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="controls.php">
                               Różne Kontrolki HTML
                               </a>
                            </li>
@@ -87,6 +87,8 @@ $invoices = $controller->fetchInvoices();
                      <h1 class="fs-4">Faktury VAT</h1>
                   </div>
 
+                  <button id="netto_highlight" class="btn btn-dark">Powyżej 1000,00 zł Netto</button>
+                  <hr>
                   <table class="table table-striped">
                         <thead>
                            <tr>
@@ -106,16 +108,16 @@ $invoices = $controller->fetchInvoices();
                            <?php
                            foreach($invoices as $invoice) {
                               ?>
-                              <tr class="<?=$invoice['id']?>">
+                              <tr data-index="<?=$invoice['id']?>">
                                  <td><?php echo $invoice['id'] ?></td>
                                  <td><?php echo $invoice['description'] ?></td>
                                  <td><?php echo $invoice['mpk'] ?></td>
-                                 <td><?php echo $invoice['net_amount'] ?></td>
-                                 <td><?php echo $invoice['amount'] ?></td>
-                                 <td><?php echo $invoice['vat'] ?></td>
-                                 <td><?php echo $invoice['gross_amount'] ?></td>
-                                 <td><?php echo $invoice['net_value'] ?></td>
-                                 <td><?php echo $invoice['gross_value'] ?></td>
+                                 <td><input name="net_amount" oninput="updatePrice(this, <?=$invoice['id']?>)" type="text" class="form-control" value="<?php echo $invoice['net_amount'] ?>"/></td>
+                                 <td><input name="amount" oninput="updatePrice(this, <?=$invoice['id']?>)" type="text" class="form-control" value="<?php echo $invoice['amount'] ?>"/></td>
+                                 <td><input name="vat" oninput="updatePrice(this, <?=$invoice['id']?>)" type="text" class="form-control" value="<?php echo $invoice['vat'] ?>"/></td>
+                                 <td data-id="gross_amount" class="text-center">-</td>
+                                 <td data-id="net_value" class="text-center">-</td>
+                                 <td data-id="gross_value" class="text-center">-</td>
                               </tr>
                               <?php
                            }
@@ -128,5 +130,35 @@ $invoices = $controller->fetchInvoices();
             </div>
          </div>
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-   </body>
+         <script>
+            function updatePrice(element, id) {
+               const rowId = element.parentNode.parentNode.dataset.index;
+               const netAmount = parseFloat(document.querySelector(`tr[data-index="${rowId}"] input[name="net_amount"]`).value) || 0;
+               const amount = parseFloat(document.querySelector(`tr[data-index="${rowId}"] input[name="amount"]`).value) || 0;
+               const vat = parseFloat(document.querySelector(`tr[data-index="${rowId}"] input[name="vat"]`).value) || 0;
+               
+               const grossAmount = netAmount + (netAmount * (vat / 100));
+               const netValue = netAmount * amount;
+               const grossValue = grossAmount * amount;
+
+               document.querySelector(`tr[data-index="${rowId}"] td[data-id="gross_amount"]`).textContent = grossAmount.toFixed(2);
+               document.querySelector(`tr[data-index="${rowId}"] td[data-id="net_value"]`).textContent = netValue.toFixed(2);
+               document.querySelector(`tr[data-index="${rowId}"] td[data-id="gross_value"]`).textContent = grossValue.toFixed(2);
+            }
+
+            document.getElementById("netto_highlight").addEventListener("click", (e) => {
+               
+               document.querySelectorAll(`input[name="net_amount"]`).forEach(element => {
+                  if (parseFloat(element.value) > 1000) {
+                     element.parentNode.parentNode.classList.add("table-success")
+                  } else {
+                     element.parentNode.parentNode.classList.remove("table-success")
+                  }
+               })
+               
+            })
+
+         </script>
+   
+      </body>
 </html>

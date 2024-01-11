@@ -14,16 +14,6 @@ $employees = $controller->fetchEmployees();
       <title>Zadanie zdalne e-MSI</title>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
       <link href="./css/style.css" rel="stylesheet">
-      <style>
-         
-         /* .table-picker tbody tr:nth-child(even) {
-            background-color: var(--even-color, #ff0000) !important;
-         }
-         .table-picker tbody tr:nth-child(odd) {
-            background-color: var(--odd-color, #ffffff) !important;
-         } */
-
-      </style>
    </head>
    <body>
       <body>
@@ -60,7 +50,7 @@ $employees = $controller->fetchEmployees();
                      <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
                         <ul class="nav flex-column">
                            <li class="nav-item">
-                              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="#">
+                              <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page" href="controls.php">
                               Różne Kontrolki HTML
                               </a>
                            </li>
@@ -93,17 +83,19 @@ $employees = $controller->fetchEmployees();
                      <h1 class="fs-4">Pracownicy</h1>
                   </div>
 
-                  <div>
+                  <div class="d-flex flex-row">
+                  <div class="mx-4">
                      <input type="color" id="odd"/>
                      <label for="odd">Nieparzyste</label>
                   </div>
-
                   <div>
                      <input type="color" id="even"/>
                      <label for="even">Parzyste</label>
                   </div>
-
-                  <table class="table table-striped">
+                  </div>
+                  <hr>
+                  <table class="table custom-table-striped">
+                        <thead>
                            <tr>
                            <th scope="col">Lp.</th>
                            <th scope="col">Imię</th>
@@ -114,7 +106,6 @@ $employees = $controller->fetchEmployees();
                            </tr>
                         </thead>
                         <tbody>
-
                            <?php
                            foreach($employees as $employee) {
                               ?>
@@ -139,27 +130,59 @@ $employees = $controller->fetchEmployees();
          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
    
          <script>
-          
-          /* const oddPicker = document.getElementById("odd");
+
+            loadColors();
+
+            const oddElements = document.querySelectorAll("table.custom-table-striped>tbody>tr:nth-child(odd)>td, table.custom-table-striped>tbody>tr:nth-child(odd)>th")
+            const evenElements = document.querySelectorAll("table.custom-table-striped>tbody>tr:nth-child(even)>td, table.custom-table-striped>tbody>tr:nth-child(even)>th")
+
+            const oddPicker = document.getElementById("odd");
             oddPicker.addEventListener("input", (e) => {
-               updateColor();
+
+               oddElements.forEach(item => {
+                  item.style.backgroundColor = e.target.value;
+               })
+
+               localStorage.setItem("oddColor", e.target.value);
+
             })
 
             const evenPicker = document.getElementById("even");
             evenPicker.addEventListener("input", (e) => {
-                updateColor();
+
+               evenElements.forEach(item => {
+                  item.style.backgroundColor = e.target.value;
+               })
+
+               localStorage.setItem("evenColor", e.target.value);
+
             })
 
-            function updateColor() {
-               console.log("test")
-               const oddColor = oddPicker.value;
-               const evenColor = evenPicker.value;
+            function loadColors() {
+               const evenColor = localStorage.getItem("evenColor");
+               const oddColor = localStorage.getItem("oddColor");
 
-               Array.from(document.getElementsByClassName("even")).forEach((item) => {
-                  item.style.backgroundColor = evenColor;
-               })
-            }     
-            */
+               if (evenColor) {
+                  const evenPicker = document.getElementById("even");
+                  evenPicker.value = evenColor;
+
+                  const evenElements = document.querySelectorAll("table.custom-table-striped>tbody>tr:nth-child(even)>td, table.custom-table-striped>tbody>tr:nth-child(even)>th");
+                  evenElements.forEach(item => {
+                     item.style.backgroundColor = evenColor;
+                  })
+               }
+
+               if (oddColor) {
+                  const oddPicker = document.getElementById("odd");
+                  oddPicker.value = oddColor;
+
+                  const oddElements = document.querySelectorAll("table.custom-table-striped>tbody>tr:nth-child(odd)>td, table.custom-table-striped>tbody>tr:nth-child(odd)>th");
+                  oddElements.forEach(item => {
+                     item.style.backgroundColor = oddColor;
+                  })
+               }
+            }
+
          </script>
    </body>
 </html>

@@ -31,6 +31,15 @@ class Controller {
         return $delegations;
     }
 
+    public function fetchDelegation($delegationId)
+    {
+        $pdo = $this->connection->getPDO();
+        $stmt = $pdo->query('SELECT * FROM delegations WHERE id = ' . $delegationId);
+        $delegation = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $delegation;
+    }
+
     public function fetchInvoices()
     {
         $invoices = [];
@@ -113,6 +122,55 @@ class Controller {
         $stmt->bindParam(":street", $data['street']);
         $stmt->bindParam(":house_number", $data['house_number']);
         $stmt->bindParam(":apartment_number", $data['apartment_number']);
+
+        $stmt->execute();
+    }
+
+    public function editDelegationById($delegationId, $data)
+    {
+        $pdo = $this->connection->getPDO();
+        $sql = 'UPDATE delegations SET 
+            fullname = :fullname,
+            date_from = :date_from,
+            date_to = :date_to,
+            departure = :departure,
+            arrival = :arrival
+            WHERE id = :id';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":fullname", $data['fullname']);
+        $stmt->bindParam(":date_from", $data['date_from']);
+        $stmt->bindParam(":date_to", $data['date_to']);
+        $stmt->bindParam(":departure", $data['departure']);
+        $stmt->bindParam(":arrival", $data['arrival']);
+        $stmt->bindParam(":id", $delegationId);
+
+        $stmt->execute();
+    }
+
+    public function createDelegation($data)
+    {
+        $pdo = $this->connection->getPDO();
+        $sql = 'INSERT INTO delegations 
+            (fullname,date_from,date_to,departure,arrival) VALUES 
+            (:fullname,:date_from,:date_to,:departure,:arrival)';
+
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":fullname", $data['fullname']);
+        $stmt->bindParam(":date_from", $data['date_from']);
+        $stmt->bindParam(":date_to", $data['date_to']);
+        $stmt->bindParam(":departure", $data['departure']);
+        $stmt->bindParam(":arrival", $data['arrival']);
+    
+        $stmt->execute();
+    }
+
+    public function deleteDelegationById($delegation_id)
+    {
+        $pdo = $this->connection->getPDO();
+        $sql = 'UPDATE delegations SET deleted = 1 WHERE id = :id';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":id", $delegation_id);
 
         $stmt->execute();
     }

@@ -1,3 +1,16 @@
+<?php
+require_once './database/controller.php';
+
+$controller = new Controller();
+$delegation = [];
+
+if (isset($_GET['id'])) {
+    $delegation_id = $_GET['id'];
+    $delegation = $controller->fetchDelegation($delegation_id);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="pl">
    <head>
@@ -6,6 +19,10 @@
       <title>Zadanie zdalne e-MSI</title>
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
       <link href="./css/style.css" rel="stylesheet">
+      <style>
+         
+
+      </style>
    </head>
    <body>
       <body>
@@ -72,9 +89,33 @@
                </div>
                <main id="prawy" class="col-md-9 ms-sm-auto px-md-3">
                   <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                     <h1 class="h2">Dashboard</h1>
-
+                     <h1 class="fs-4">Delegacje</h1>
                   </div>
+
+                  <form action="actions.php?id=<?php echo $delegation_id; ?>" method="POST">
+                        <div class="mb-3">
+                            <label for="fullname" class="form-label">Imię i Nazwisko</label>
+                            <input name="fullname" type="text" class="form-control" id="fullname" value="<?php echo $delegation['fullname'] ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="date_from" class="form-label">Data od</label>
+                            <input name="date_from" type="date" class="form-control" id="date_from" value="<?php echo $delegation['date_from'] ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="date_to" class="form-label">Data do</label>
+                            <input name="date_to" type="date" class="form-control" id="date_to" value="<?php echo $delegation['date_to'] ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="departure" class="form-label">Miejsce wyjazdu</label>
+                            <input name="departure" type="text" class="form-control" id="departure" value="<?php echo $delegation['departure'] ?>">
+                        </div>
+                        <div class="mb-3">
+                            <label for="arrival" class="form-label">Miejsce przyjazdu</label>
+                            <input name="arrival" type="text" class="form-control" id="arrival" value="<?php echo $delegation['arrival'] ?>">
+                        </div>
+
+                        <button name="btn_edit_delegation" class="btn btn-dark mt-3" type="submit">Zapisz</button>
+                    </form>
                </main>
             </div>
          </div>

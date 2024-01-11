@@ -45,6 +45,45 @@ if (isset($_POST['btn_create_contractor'])) {
     header('Location: contractors.php?created=1');
 }
 
+if(isset($_POST['btn_edit_delegation'])) {
+    $delegation_id = $_GET['id'];
+
+    $data = array(
+        'fullname' => isset($_POST['fullname']) ? $_POST['fullname'] : null,
+        'date_from' => isset($_POST['date_from']) ? $_POST['date_from'] : null,
+        'date_to' => isset($_POST['date_to']) ? $_POST['date_to'] : null,
+        'departure' => isset($_POST['departure']) ? $_POST['departure'] : null,
+        'arrival'=> isset($_POST['arrival']) ? $_POST['arrival'] : null,
+    );
+
+    $controller->editDelegationById($delegation_id, $data);
+
+    header('Location: delegation.php?edited=1');
+}
+
+if (isset($_POST['btn_create_delegation'])) {
+    $data = array(
+        'fullname' => isset($_POST['fullname']) ? $_POST['fullname'] : null,
+        'date_from' => isset($_POST['date_from']) ? $_POST['date_from'] : null,
+        'date_to' => isset($_POST['date_to']) ? $_POST['date_to'] : null,
+        'departure' => isset($_POST['departure']) ? $_POST['departure'] : null,
+        'street'=> isset($_POST['street']) ? $_POST['street'] : null,
+        'arrival'=> isset($_POST['arrival']) ? $_POST['arrival'] : null,
+    );
+
+    $controller->createDelegation($data);
+
+    header('Location: delegation.php?created=1');
+}
+
+if (isset($_POST['delegation_delete'])) {
+    $delegation_id = $_GET['id'];
+
+    $controller->deleteDelegationById($delegation_id);
+
+    header('Location: delegation.php?deleted=1');
+}
+
 // EDYCJA EMPLOJSÓW
 if(isset($_POST['btn_edit_employee'])) {
 
