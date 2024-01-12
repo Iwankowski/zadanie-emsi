@@ -10,7 +10,7 @@ if(isset($_POST['btn_edit_contractor'])) {
         'nip' => isset($_POST['nip']) ? $_POST['nip'] : null,
         'regon' => isset($_POST['regon']) ? $_POST['regon'] : null,
         'name' => isset($_POST['name']) ? $_POST['name'] : null,
-        'vat' => isset($_POST['vat_payer']) ? $_POST['vat_payer'] : false,
+        'vat_payer' => isset($_POST['vat_payer']) ? $_POST['vat_payer'] : false,
         'street'=> isset($_POST['street']) ? $_POST['street'] : null,
         'house_number'=> isset($_POST['house_number']) ? $_POST['house_number'] : null,
         'apartment_number'=> isset($_POST['apartment_number']) ? $_POST['apartment_number'] : null

@@ -78,16 +78,18 @@ class Controller {
             nip = :nip,
             regon = :regon,
             name = :name,
-            vat_payer = :vat,
+            vat_payer = :vat_payer,
             street = :street,
             house_number = :house_number,
             apartment_number = :apartment_number 
             WHERE id = :id';
 
+        $vat_payer = isset($data['vat_payer']) ? 1 : 0;
+
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(":nip", $data['nip']);
         $stmt->bindParam(":regon", $data['regon']);
-        $stmt->bindParam(":vat", $data['vat']);
+        $stmt->bindParam(":vat_payer", $vat_payer);
         $stmt->bindParam(":name", $data['name']);
         $stmt->bindParam(":street", $data['street']);
         $stmt->bindParam(":house_number", $data['house_number']);
